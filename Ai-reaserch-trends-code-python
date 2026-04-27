@@ -1,0 +1,112 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+import numpy as np
+import os
+
+# -------------------
+# DATA
+# -------------------
+data = {
+    "year": [2019, 2020, 2021, 2022, 2023, 2024, 2025],
+    "Machine Learning": [5200, 5450, 5300, 5150, 4900, 4800, 4600],
+    "Deep Learning": [12400, 15800, 18200, 21500, 24800, 28500, 32000],
+    "Generative AI": [400, 750, 1800, 3200, 7100, 15200, 21500],
+    "AI Agents": [45, 110, 240, 480, 850, 1450, 3800]
+}
+
+df = pd.DataFrame(data)
+
+# -------------------
+# SETTINGS
+# -------------------
+categories = ["Machine Learning", "Deep Learning", "Generative AI", "AI Agents"]
+
+colors = {
+    "Machine Learning": "#1f77b4",
+    "Deep Learning": "#ff7f0e",
+    "Generative AI": "#2ca02c",
+    "AI Agents": "#d62728"
+}
+
+x = np.arange(len(df["year"]))
+width = 0.18
+
+# -------------------
+# FIGURE
+# -------------------
+fig, ax = plt.subplots(figsize=(12, 6))
+
+for i, category in enumerate(categories):
+    positions = x + (i - 1.5) * width
+
+    bars = ax.bar(
+        positions,
+        df[category],
+        width,
+        label=category,
+        color=colors[category],
+        edgecolor="black",
+        linewidth=0.6
+    )
+
+    # labels sur barres
+    for bar in bars:
+        h = bar.get_height()
+        ax.text(
+            bar.get_x() + bar.get_width()/2,
+            h,
+            f"{int(h)}",
+            ha="center",
+            va="bottom",
+            fontsize=7,
+            rotation=90
+        )
+
+# -------------------
+# STYLE
+# -------------------
+ax.set_title("AI Research Trends Evolution (2019–2025)", fontsize=14, fontweight="bold")
+ax.set_ylabel("Number of Publications")
+ax.set_xlabel("Year")
+
+ax.set_xticks(x)
+ax.set_xticklabels(df["year"])
+
+ax.legend(title="AI Fields")
+ax.grid(True, linestyle="--", alpha=0.3)
+
+plt.tight_layout()
+
+# -------------------
+# SAVE IMAGE (GALERIE SAFE)
+# -------------------
+path = "/storage/emulated/0/Pictures/ai_trends.png"
+
+try:
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    plt.savefig(path, dpi=300, bbox_inches="tight")
+    print("✅ Image enregistrée :", path)
+except Exception as e:
+    print("❌ Erreur sauvegarde :", e)
+
+# -------------------
+# REFRESH GALLERY (ANDROID SAFE)
+# -------------------
+try:
+    from android.media import MediaScannerConnection
+    from android import activity
+
+    MediaScannerConnection.scanFile(
+        activity.getApplicationContext(),
+        [path],
+        None,
+        None
+    )
+    print("📱 Galerie mise à jour")
+except Exception:
+    print("ℹ️ Scan galerie non supporté sur cet appareil")
+
+# -------------------
+# SHOW
+# -------------------
+plt.show()
